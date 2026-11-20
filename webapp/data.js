@@ -1,4 +1,4 @@
-// SANAD Family Relay — real/aggregated dataset extracted from "Dataset Abu Dhabi" Excel files.
+// Sabq Kashf — real/aggregated dataset extracted from "Dataset Abu Dhabi" Excel files.
 // All figures are illustration-only aggregates from open public data (see SOURCES).
 const DATA = {
   siteAll: [["Breast", 325], ["Other sites", 295], ["Thyroid", 199], ["Colorectal", 175], ["Leukemia / blood", 128], ["Lung", 84]],

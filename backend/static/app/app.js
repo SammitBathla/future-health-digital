@@ -23,7 +23,7 @@ const firstName = () => nm(S.me).split(' ')[0];
 
 function welcome() {
   return `<div class="scroll enter">
-    <div class="hdr" style="align-items:center"><div class="brand"><span class="logo-dot"></span><b>SANAD</b></div>${langBtn()}</div>
+    <div class="hdr" style="align-items:center"><div class="brand"><span class="logo-dot"></span><b>Sabq Kashf</b></div>${langBtn()}</div>
     <h1 class="hero-title"><span>${t('app.tag1')}</span>${t('app.tag2')}</h1>
     <div class="welcome-art floaty">${heartArt(230, 'w')}</div>
     <button class="btn-primary wide" data-act="openAccounts">${icon('phone', 18)}${t('app.signInMobile')}</button>

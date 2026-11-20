@@ -1,4 +1,4 @@
-// SANAD Family Relay — PATIENT app.
+// Sabq Kashf — PATIENT app.
 // Deliberately minimal: a patient sees an appointment, simple precautions,
 // and an optional family invite — never family history, genetic results or
 // a risk score. That detail is reserved for the Doctor and Insurer views.

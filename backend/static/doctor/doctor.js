@@ -186,7 +186,7 @@ function sideHTML() {
   const done = (S.list || []).filter(a => a.status === 'completed').length;
   const d = S.me;
   return `<aside class="side">
-      <div class="brand"><span class="logo-dot"></span><div><b>SANAD</b><small>${t('doctor.sub')}</small></div></div>
+      <div class="brand"><span class="logo-dot"></span><div><b>Sabq Kashf</b><small>${t('doctor.sub')}</small></div></div>
       <button class="navlink ${S.tab === 'upcoming' ? 'on' : ''}" data-act="tab" data-id="upcoming">${icon('calendar', 20)}${t('doctor.nav.upcoming')}${up ? `<span class="count num">${up}</span>` : ''}</button>
       <button class="navlink ${S.tab === 'completed' ? 'on' : ''}" data-act="tab" data-id="completed">${icon('checkCircle', 20)}${t('doctor.nav.completed')}${done ? `<span class="count num">${done}</span>` : ''}</button>
       <div class="side-foot">

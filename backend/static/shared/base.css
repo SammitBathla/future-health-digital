@@ -1,4 +1,4 @@
-/* SANAD shared design system — soft grey-green ground, white glass cards, thin oversized
+/* Sabq Kashf shared design system — soft grey-green ground, white glass cards, thin oversized
    numerals, one green accent; red/amber reserved for clinical priority. */
 :root{
   --bg-top:#F5F6F5; --bg-bot:#E5E9E6; --card:rgba(255,255,255,.92);
@@ -201,7 +201,7 @@ html[lang=ar] .tile b{font-size:25px;letter-spacing:0}
 .keypad button:active{background:var(--g-soft);transform:scale(.93)}
 .err{color:var(--crit)}
 
-/* SANAD Assist (AI) */
+/* Sabq Kashf Assist (AI) */
 .ai-card{position:relative;border:1.5px solid transparent;background:linear-gradient(#fff,#fff) padding-box,linear-gradient(135deg,#3CCB7F,#1E9E5A 45%,#D6E9DD) border-box}
 .ai-hd{display:flex;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:12px}
 .ai-hd .grow{flex:1;min-width:200px}

@@ -102,7 +102,7 @@ function shell(body) {
   const needs = S.rows ? S.rows.filter(r => r.status === 'flagged').length : 0;
   return `<div class="shell">
     <aside class="side">
-      <div class="brand"><span class="logo-dot"></span><div><b>SANAD</b><small>${t('doh.sub')}</small></div></div>
+      <div class="brand"><span class="logo-dot"></span><div><b>Sabq Kashf</b><small>${t('doh.sub')}</small></div></div>
       <button class="navlink ${S.page === 'overview' ? 'on' : ''}" data-act="page" data-id="overview">${icon('grid', 20)}${t('doh.nav.overview')}</button>
       <button class="navlink ${S.page === 'outreach' ? 'on' : ''}" data-act="page" data-id="outreach">${icon('megaphone', 20, 'flip')}${t('doh.nav.outreach')}${needs ? `<span class="count num">${needs}</span>` : ''}</button>
       <div class="side-foot">

@@ -1,4 +1,4 @@
-<title>SANAD Family Relay</title>
+<title>Sabq Kashf</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -137,7 +137,7 @@ body{display:flex; justify-content:center;}
   <div class="topbar">
     <div class="brand">
       <div class="logo"><span class="emo">🩺</span></div>
-      <div><h1 id="brandName">SANAD</h1><span id="brandSub">Family Relay</span></div>
+      <div><h1 id="brandName">Sabq Kashf</h1><span id="brandSub">Family Relay</span></div>
     </div>
     <button class="langbtn" id="langBtn"><span class="emo">🌐</span><span id="langLabel">عربي</span></button>
   </div>
@@ -154,7 +154,7 @@ body{display:flex; justify-content:center;}
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
 <script>
-// SANAD Family Relay — real/aggregated dataset extracted from "Dataset Abu Dhabi" Excel files.
+// Sabq Kashf — real/aggregated dataset extracted from "Dataset Abu Dhabi" Excel files.
 // All figures are illustration-only aggregates from open public data (see SOURCES).
 const DATA = {
   siteAll: [["Breast", 325], ["Other sites", 295], ["Thyroid", 199], ["Colorectal", 175], ["Leukemia / blood", 128], ["Lung", 84]],
@@ -191,7 +191,7 @@ function L(s, lang) { return lang === "ar" ? (LABELS_AR[s] || s) : s; }
 
 </script>
 <script>
-// SANAD Family Relay — demo web app logic (bilingual EN/AR)
+// Sabq Kashf — demo web app logic (bilingual EN/AR)
 let lang = localStorage.getItem("sanad_lang") || "en";
 let persona = "mariam";
 let pathwayStep = 2; // 0-5 index into STEP icons, advances on "Yes, book it"
@@ -239,7 +239,7 @@ function ic(cls){ return EMOJI_MAP[cls] || "\u2022"; }
 
 const STR = {
   en: {
-    brand: "SANAD", brandSub: "Family Relay",
+    brand: "Sabq Kashf", brandSub: "Family Relay",
     tabs: { home: "Home", insights: "Insights", relay: "My Relay", family: "Family", trust: "Trust" },
 
     home: {
@@ -248,7 +248,7 @@ const STR = {
       stat1n: "<10%", stat1l: "of eligible adults screened for colorectal cancer",
       stat2n: "67%", stat2l: "of new colorectal cases found at a late stage (2023)",
       stat3n: "1 in 3", stat3l: "UAE colorectal cancers occur under age 50",
-      howTitle: "How SANAD works", howSub: "A smart alarm — it listens for life events, with consent, and offers the right check at the right time.",
+      howTitle: "How Sabq Kashf works", howSub: "A smart alarm — it listens for life events, with consent, and offers the right check at the right time.",
       step1: "Life event", step2: "Risk check", step3: "Explainable flag", step4: "Right language & choice",
       whyTitle: "Real risk hides in places the calendar rule never looks", whySub: "A birthday rule invites everyone the same way — these don't fit that rule:",
       why: [

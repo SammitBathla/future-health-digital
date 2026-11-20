@@ -1,5 +1,5 @@
 'use strict';
-/* Shared helpers, icons and visual primitives for the three SANAD portals. */
+/* Shared helpers, icons and visual primitives for the three Sabq Kashf portals. */
 
 const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const G = '#1E9E5A';
@@ -247,7 +247,7 @@ async function api(path, opts = {}) {
   return body;
 }
 
-/* ---------------- SANAD Assist (grounded generative AI) ---------------- */
+/* ---------------- Sabq Kashf Assist (grounded generative AI) ---------------- */
 function aiLoading(small) {
   return `<div class="ai-loading ${small ? 'small' : ''}" role="status"><span class="ai-orb"></span><div><b>${t(small ? 'ai.asking' : 'ai.working')}</b>
     ${small ? '' : `<ol class="ai-steps"><li>${t('ai.step1')}</li><li>${t('ai.step2')}</li><li>${t('ai.step3')}</li></ol>`}</div></div>`;

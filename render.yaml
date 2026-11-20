@@ -1,0 +1,28 @@
+# Render Blueprint — the Flask API. Secrets (sync: false) are entered in the Render dashboard.
+services:
+  - type: web
+    name: sanad-api
+    runtime: python
+    rootDir: backend
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    # ONE worker: programme state is cached in memory (and written through to Supabase)
+    startCommand: gunicorn app:app --workers 1 --threads 8 --timeout 200 --bind 0.0.0.0:$PORT
+    healthCheckPath: /healthz
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.7
+      - key: ANTHROPIC_API_KEY
+        sync: false
+      - key: DATABASE_URL
+        sync: false
+      - key: CORS_ORIGINS
+        sync: false        # e.g. https://sanad.vercel.app
+      - key: DEMO_PIN_DOH
+        sync: false
+      - key: DEMO_PIN_RESIDENT
+        sync: false
+      - key: DEMO_PIN_DOCTOR
+        sync: false
+      - key: AI_CALLS_PER_HOUR
+        value: "30"

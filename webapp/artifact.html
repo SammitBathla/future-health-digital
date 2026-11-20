@@ -1,0 +1,754 @@
+<title>SANAD Family Relay</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#17305c; --navy-dark:#0f1f3d; --teal:#0f9488; --teal-light:#e3f5f2;
+  --rose:#c63a56; --rose-light:#fbe7eb; --amber:#d98a2b; --amber-light:#fbedda;
+  --ink:#1c2430; --muted:#6b7686; --line:#e7eaf0; --bg:#f4f6f9; --card:#ffffff;
+  --radius:18px; --shadow:0 2px 10px rgba(23,48,92,.06), 0 1px 2px rgba(23,48,92,.04);
+  --font:"Segoe UI", "Helvetica Neue", Arial, "Noto Kufi Arabic", sans-serif;
+  color-scheme: light;
+}
+.emo{display:inline-block; font-style:normal; line-height:1;}
+*{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+html,body{margin:0; padding:0; height:100%; background:var(--bg); font-family:var(--font); color:var(--ink);}
+body{display:flex; justify-content:center;}
+#app{width:100%; max-width:480px; min-height:100vh; background:var(--bg); position:relative; display:flex; flex-direction:column; box-shadow:0 0 40px rgba(0,0,0,.06);}
+@media(min-width:900px){ body{align-items:flex-start; padding-top:24px;} #app{min-height:860px; border-radius:28px; overflow:hidden; margin-bottom:24px;} }
+
+[dir="rtl"] body{font-family:"Segoe UI","Noto Kufi Arabic",Tahoma,sans-serif;}
+
+/* Top bar */
+.topbar{display:flex; align-items:center; justify-content:space-between; padding:16px 18px 10px; background:var(--navy); color:#fff; position:sticky; top:0; z-index:20;}
+.brand{display:flex; align-items:center; gap:10px;}
+.brand .logo{width:34px; height:34px; border-radius:10px; background:var(--teal); display:flex; align-items:center; justify-content:center; font-size:16px;}
+.brand h1{font-size:16px; margin:0; font-weight:700; letter-spacing:.3px;}
+.brand span{display:block; font-size:10.5px; color:#b9c6e0; font-weight:400;}
+.langbtn{background:rgba(255,255,255,.14); border:1px solid rgba(255,255,255,.25); color:#fff; border-radius:999px; padding:7px 13px; font-size:12.5px; font-weight:600; cursor:pointer; display:flex; align-items:center; gap:6px;}
+.langbtn:active{background:rgba(255,255,255,.26);}
+
+/* Screens */
+.screen{display:none; padding:16px 16px 90px; flex:1; animation:fade .18s ease;}
+.screen.active{display:block;}
+@keyframes fade{from{opacity:0; transform:translateY(4px);} to{opacity:1; transform:none;}}
+
+.page-title{font-size:19px; font-weight:800; margin:4px 0 2px; color:var(--navy-dark);}
+.page-sub{font-size:12.5px; color:var(--muted); margin:0 0 14px;}
+
+/* Cards */
+.card{background:var(--card); border-radius:var(--radius); box-shadow:var(--shadow); padding:16px; margin-bottom:14px;}
+.card h3{margin:0 0 8px; font-size:14px; font-weight:700; display:flex; align-items:center; gap:8px;}
+.card h3 .emo{width:18px; text-align:center; display:inline-block;}
+.caption{font-size:11.5px; color:var(--muted); margin-top:8px; line-height:1.5;}
+
+/* Stat tiles */
+.stat-row{display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:14px;}
+.stat{border-radius:16px; padding:14px 8px; text-align:center; box-shadow:var(--shadow);}
+.stat .num{font-size:21px; font-weight:800; line-height:1.1;}
+.stat .lbl{font-size:10px; margin-top:4px; font-weight:600; line-height:1.3;}
+.stat.rose{background:var(--rose-light); color:var(--rose);}
+.stat.amber{background:var(--amber-light); color:var(--amber);}
+.stat.teal{background:var(--teal-light); color:var(--teal);}
+
+/* Icon step row */
+.steps{display:flex; justify-content:space-between; gap:6px; margin:10px 0 4px;}
+.step{flex:1; text-align:center; font-size:10px; color:var(--muted); font-weight:600;}
+.step .circ{width:40px; height:40px; border-radius:50%; background:var(--navy); color:#fff; display:flex; align-items:center; justify-content:center; margin:0 auto 6px; font-size:16px;}
+.step.active .circ{background:var(--teal);}
+.step.done .circ{background:var(--teal); opacity:.55;}
+.steps-arrow{display:none;}
+
+/* chip row */
+.chip-row{display:flex; gap:8px; overflow-x:auto; padding-bottom:4px; margin-bottom:12px;}
+.chip{flex:0 0 auto; display:flex; align-items:center; gap:6px; background:#fff; border:1.5px solid var(--line); border-radius:999px; padding:8px 13px; font-size:12.5px; font-weight:600; color:var(--ink); cursor:pointer; white-space:nowrap;}
+.chip .emo{display:inline-block;}
+.chip.active{background:var(--navy); color:#fff; border-color:var(--navy);}
+.chip.active .emo{filter:none;}
+
+/* why list */
+.why-item{display:flex; gap:10px; padding:9px 0; border-bottom:1px dashed var(--line); align-items:flex-start;}
+.why-item:last-child{border-bottom:none;}
+.why-num{width:22px; height:22px; border-radius:50%; background:var(--rose); color:#fff; font-size:11px; font-weight:800; display:flex; align-items:center; justify-content:center; flex:0 0 auto; margin-top:1px;}
+.why-text b{display:block; font-size:13px;}
+.why-text small{color:var(--muted); font-size:11px;}
+
+.badge{display:inline-block; font-size:10.5px; font-weight:700; padding:4px 10px; border-radius:999px;}
+.badge.elevated{background:var(--rose-light); color:var(--rose);}
+.badge.confidence{background:#eef1f6; color:var(--muted); font-weight:600; margin-top:10px; display:block; padding:8px 10px; border-radius:10px;}
+
+.actions{display:flex; gap:8px; margin-top:12px;}
+.btn{flex:1; border:none; border-radius:12px; padding:11px 6px; font-size:12px; font-weight:700; cursor:pointer;}
+.btn.primary{background:var(--teal); color:#fff;}
+.btn.secondary{background:var(--amber-light); color:var(--amber);}
+.btn.ghost{background:#eef1f6; color:var(--muted);}
+.btn:active{transform:scale(.97);}
+
+.toast{position:fixed; left:50%; bottom:86px; transform:translateX(-50%) translateY(20px); background:var(--navy-dark); color:#fff; padding:11px 18px; border-radius:12px; font-size:12.5px; font-weight:600; box-shadow:0 8px 24px rgba(0,0,0,.25); opacity:0; pointer-events:none; transition:all .25s ease; z-index:60; max-width:85%; text-align:center;}
+[dir="rtl"] .toast{transform:translateX(50%) translateY(20px);}
+.toast.show{opacity:1; transform:translateX(-50%) translateY(0);}
+[dir="rtl"] .toast.show{transform:translateX(50%) translateY(0);}
+
+/* family tree */
+.tree{display:flex; flex-direction:column; align-items:center; gap:10px; margin-bottom:6px;}
+.tree .me{background:var(--navy); color:#fff; border-radius:14px; padding:10px 20px; font-weight:700; font-size:13px; text-align:center;}
+.tree .me small{display:block; font-weight:400; font-size:10.5px; color:#b9c6e0;}
+.branch-line{width:2px; height:14px; background:var(--line);}
+.relatives{display:grid; grid-template-columns:repeat(2,1fr); gap:10px; width:100%;}
+.relative{background:#fff; border:1.5px solid var(--line); border-radius:14px; padding:10px; display:flex; justify-content:space-between; align-items:center; gap:6px;}
+.relative .who{font-size:12px; font-weight:700;}
+.relative .who small{display:block; font-weight:400; color:var(--muted); font-size:10px;}
+.switch{width:36px; height:21px; border-radius:999px; background:#d7dce3; position:relative; cursor:pointer; flex:0 0 auto; transition:.2s;}
+.switch i{position:absolute; top:2px; left:2px; width:17px; height:17px; border-radius:50%; background:#fff; transition:.2s; box-shadow:0 1px 2px rgba(0,0,0,.3);}
+.switch.on{background:var(--teal);}
+.switch.on i{left:17px;}
+[dir="rtl"] .switch i{left:auto; right:2px;}
+[dir="rtl"] .switch.on i{right:17px; left:auto;}
+
+.msg-preview{background:var(--teal-light); border-radius:14px; padding:12px; font-size:12.5px; color:#0b5f56; margin-top:10px; line-height:1.6;}
+
+/* trust list */
+.trust-item{display:flex; gap:12px; padding:12px 0; border-bottom:1px solid var(--line); align-items:flex-start;}
+.trust-item:last-child{border-bottom:none;}
+.trust-item .ic{width:38px; height:38px; border-radius:11px; background:var(--teal-light); color:var(--teal); display:flex; align-items:center; justify-content:center; font-size:16px; flex:0 0 auto;}
+.trust-item b{font-size:13px; display:block;}
+.trust-item small{color:var(--muted); font-size:11.5px;}
+
+/* bottom nav */
+.tabbar{position:sticky; bottom:0; left:0; right:0; background:#fff; border-top:1px solid var(--line); display:flex; z-index:30; max-width:480px; margin:0 auto; width:100%;}
+.tab{flex:1; text-align:center; padding:9px 2px 10px; cursor:pointer; color:var(--muted); font-size:10px; font-weight:600;}
+.tab .emo{display:block; font-size:17px; margin-bottom:3px;}
+.tab.active{color:var(--teal);}
+
+.chart-wrap{position:relative; height:190px;}
+.legend-row{display:flex; flex-wrap:wrap; gap:8px; margin-top:10px;}
+.legend-dot{display:inline-block; width:9px; height:9px; border-radius:50%; margin-inline-end:5px;}
+.legend-item{font-size:11px; color:var(--muted); display:flex; align-items:center;}
+
+.persona-card{display:flex; gap:10px; align-items:center;}
+.persona-card .av{width:44px; height:44px; border-radius:50%; background:var(--navy); color:#fff; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:16px; flex:0 0 auto;}
+.persona-card .nm{font-weight:800; font-size:15px;}
+.persona-card .rl{font-size:11.5px; color:var(--muted);}
+
+.source-box{font-size:10.5px; color:var(--muted); line-height:1.7; background:#eef1f6; border-radius:12px; padding:10px 12px;}
+
+</style>
+
+<div id="app">
+  <div class="topbar">
+    <div class="brand">
+      <div class="logo"><span class="emo">🩺</span></div>
+      <div><h1 id="brandName">SANAD</h1><span id="brandSub">Family Relay</span></div>
+    </div>
+    <button class="langbtn" id="langBtn"><span class="emo">🌐</span><span id="langLabel">عربي</span></button>
+  </div>
+
+  <div class="screen" id="screen-home"></div>
+  <div class="screen" id="screen-insights"></div>
+  <div class="screen" id="screen-relay"></div>
+  <div class="screen" id="screen-family"></div>
+  <div class="screen" id="screen-trust"></div>
+
+  <div class="tabbar" id="tabbar"></div>
+  <div class="toast" id="toast"></div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<script>
+// SANAD Family Relay — real/aggregated dataset extracted from "Dataset Abu Dhabi" Excel files.
+// All figures are illustration-only aggregates from open public data (see SOURCES).
+const DATA = {
+  siteAll: [["Breast", 325], ["Other sites", 295], ["Thyroid", 199], ["Colorectal", 175], ["Leukemia / blood", 128], ["Lung", 84]],
+  siteMen: [["Other sites", 137], ["Colorectal", 117], ["Leukemia / blood", 82], ["Prostate", 72], ["Lung", 65], ["Lymph nodes", 57]],
+  siteWomen: [["Breast", 321], ["Thyroid", 147], ["Other sites", 70], ["Colorectal", 58], ["Cervix", 57], ["Uterus", 55]],
+  seerStage: [["In-situ", 206], ["Localized", 939], ["Regional", 772], ["Distant", 811], ["Unknown", 1088]],
+  obesityByAge: [["18-29", 28.5], ["30-44", 37.1], ["45-59", 40.7], ["60+", 49.0]],
+  obesityTrend: [[2017, 35.9], [2019, 35.9], [2021, 35.9], [2023, 35.9]],
+  facilitiesSector: [["Private", 1273], ["Government", 423]],
+  facilitiesByEmirate: [["Dubai", 2365], ["Abu Dhabi", 1696], ["Sharjah", 865], ["Ras Al Khaimah", 248], ["Ajman", 236], ["Fujairah", 151], ["Umm Al Quwain", 47]],
+  mortalityTrend: [[2015, 427], [2016, 421], [2017, 497], [2018, 540]],
+  breastAgePeak: "45-49",
+  colorectalAgePeak: "55-59",
+  sources: [
+    "UAE National Cancer Registry / MOHAP — cancer cases & stage, Abu Dhabi (2014-2015)",
+    "SCAD — Non-Citizen population estimates, Abu Dhabi",
+    "MOHAP — Prevalence of obesity, UAE (2017-2023)",
+    "Bayanat — Health facilities by emirate & type (2018)",
+    "Bayanat — Cancer mortality by emirate (2011-2018)"
+  ]
+};
+
+// Translation map for recurring chart category labels (English term -> Arabic)
+const LABELS_AR = {
+  "Breast": "الثدي", "Other sites": "مواقع أخرى", "Thyroid": "الغدة الدرقية", "Colorectal": "القولون والمستقيم",
+  "Leukemia / blood": "اللوكيميا وأمراض الدم", "Lung": "الرئة", "Prostate": "البروستاتا", "Lymph nodes": "الغدد الليمفاوية",
+  "Cervix": "عنق الرحم", "Uterus": "الرحم",
+  "In-situ": "موضعي مبكر", "Localized": "موضعي", "Regional": "إقليمي", "Distant": "منتشر", "Unknown": "غير معروف",
+  "Private": "خاص", "Government": "حكومي",
+  "Dubai": "دبي", "Abu Dhabi": "أبوظبي", "Sharjah": "الشارقة", "Ras Al Khaimah": "رأس الخيمة",
+  "Ajman": "عجمان", "Fujairah": "الفجيرة", "Umm Al Quwain": "أم القيوين"
+};
+function L(s, lang) { return lang === "ar" ? (LABELS_AR[s] || s) : s; }
+
+</script>
+<script>
+// SANAD Family Relay — demo web app logic (bilingual EN/AR)
+let lang = localStorage.getItem("sanad_lang") || "en";
+let persona = "mariam";
+let pathwayStep = 2; // 0-5 index into STEP icons, advances on "Yes, book it"
+let charts = {};
+const EMOJI_MAP = {
+  "fa-heart-pulse": "🩺",
+  "fa-globe": "🌐",
+  "fa-bell": "🔔",
+  "fa-house-medical": "🏠",
+  "fa-magnifying-glass-chart": "🔎",
+  "fa-comment-medical": "💬",
+  "fa-language": "🗣️",
+  "fa-magnifying-glass": "🔍",
+  "fa-people-roof": "👪",
+  "fa-dna": "🧬",
+  "fa-calendar-xmark": "📅",
+  "fa-shield-heart": "🛡️",
+  "fa-child-reaching": "🧒",
+  "fa-chart-simple": "📊",
+  "fa-venus-mars": "⚥",
+  "fa-hourglass-half": "⏳",
+  "fa-weight-scale": "⚖️",
+  "fa-hospital": "🏥",
+  "fa-chart-line": "📈",
+  "fa-circle-info": "ℹ️",
+  "fa-user": "👤",
+  "fa-list-ol": "📋",
+  "fa-circle-half-stroke": "◐",
+  "fa-calendar-check": "✅",
+  "fa-route": "🧭",
+  "fa-map-location-dot": "🗺️",
+  "fa-comment-dots": "💬",
+  "fa-lock": "🔒",
+  "fa-database": "🗄️",
+  "fa-user-check": "✅",
+  "fa-user-group": "👥",
+  "fa-scale-balanced": "⚖️",
+  "fa-flag": "🇦🇪",
+  "fa-stethoscope": "🩺",
+  "fa-house": "🏠",
+  "fa-chart-pie": "📊",
+};
+function ic(cls){ return EMOJI_MAP[cls] || "\u2022"; }
+
+
+const STR = {
+  en: {
+    brand: "SANAD", brandSub: "Family Relay",
+    tabs: { home: "Home", insights: "Insights", relay: "My Relay", family: "Family", trust: "Trust" },
+
+    home: {
+      title: "Screening by life event, not birthday",
+      sub: "Abu Dhabi precision prevention & screening",
+      stat1n: "<10%", stat1l: "of eligible adults screened for colorectal cancer",
+      stat2n: "67%", stat2l: "of new colorectal cases found at a late stage (2023)",
+      stat3n: "1 in 3", stat3l: "UAE colorectal cancers occur under age 50",
+      howTitle: "How SANAD works", howSub: "A smart alarm — it listens for life events, with consent, and offers the right check at the right time.",
+      step1: "Life event", step2: "Risk check", step3: "Explainable flag", step4: "Right language & choice",
+      whyTitle: "Real risk hides in places the calendar rule never looks", whySub: "A birthday rule invites everyone the same way — these don't fit that rule:",
+      why: [
+        ["fa-people-roof","Family history","A relative's diagnosis changes the picture"],
+        ["fa-dna","Genes (BRCA / Lynch)","A result the standard invite never asks about"],
+        ["fa-calendar-xmark","Missed or overdue test","Silence in the record, not low risk"],
+        ["fa-shield-heart","Diabetes, obesity, bowel disease","Known risk multipliers, not screened for"],
+        ["fa-child-reaching","Child's visit, parent not asked","One visit, two generations of risk"],
+        ["fa-language","Area, work shift, language","Invited late, or not understood"]
+      ],
+      goBtn: "See it for one person →"
+    },
+
+    insights: {
+      title: "Abu Dhabi, at a glance", sub: "For planners — community risk map (open data, illustration only)",
+      cases: "New cancer cases by primary site", casesCap: "Breast, thyroid and colorectal lead new registrations.",
+      gender: "Split by gender", genderCap: "Breast dominates in women; colorectal & leukaemia in men.",
+      stage: "Stage at diagnosis (UAE)", stageCap: "Distant + Unknown together are nearly half of all cases — the timing gap in one chart.",
+      obesity: "Obesity prevalence by age, Abu Dhabi", obesityCap: "Risk climbs sharply after 45 — a key context signal for the risk engine.",
+      facilities: "Health facilities, Abu Dhabi", facilitiesCap: "Mostly private-sector capacity — outreach needs to reach both sectors.",
+      mortality: "Cancer deaths, Abu Dhabi (trend)", mortalityCap: "A rising trend reinforces the case for earlier catches.",
+      men: "Men", women: "Women", all: "All",
+      note: "Groups under 10 are hidden on the real planner map. This is illustration-only open data, not individual records."
+    },
+
+    relay: {
+      title: "The personal engine", sub: "What the person and their doctor would see",
+      personas: { mariam: "Mariam, 38", rajesh: "Rajesh, 50", aisha: "Dr Aisha" },
+      personaRoles: { mariam: "Emirati, mother diagnosed at 44", rajesh: "Expat supervisor, never screened", aisha: "Public health planner" },
+      flagLabel: "ELEVATED RISK (family)", whyTitle: "Why (top reasons)",
+      mariamWhy: [
+        ["Mother had breast cancer at 44","Source: screening visit, self-reported"],
+        ["No mammogram on record","Source: health record"],
+        ["Breast risk score above threshold","Risk model, allowed from age 35"]
+      ],
+      rajeshFlag: "ELEVATED RISK (new diagnosis)",
+      rajeshWhy: [
+        ["New diabetes diagnosis, age 50","Source: lab result, this month"],
+        ["No stool (FIT) test on record","Source: health record"],
+        ["Colorectal screening due at 45+","DoH guideline"]
+      ],
+      aishaCard: "Community view", aishaText: "Dr Aisha doesn't see one flag — she sees the map: where the gaps are, and which group to reach next.",
+      confidence: "Confidence: MEDIUM — family history not yet verified",
+      suggested: "Suggested: earlier breast check + genetic counselling, within 4 weeks",
+      suggestedRajesh: "Suggested: FIT stool test, within 4 weeks",
+      yes: "Yes, book it", remind: "Remind in 3 months", no: "No, thanks",
+      stepTitle: "Pathway progress",
+      steps: ["Data in","Risk engine","Flag","Pathway","Outreach","Result"],
+      toastYes: "Booked — follow-up reminder set.", toastRemind: "Noted. We'll check back in 3 months.", toastNo: "No problem — your choice is saved.",
+      notDiag: "Population priority only. The doctor makes every clinical decision."
+    },
+
+    family: {
+      title: "Family Relay", sub: "With her permission, Mariam can invite relatives for the same check",
+      me: "Mariam, 38", meSub: "Elevated risk flagged",
+      sister: "Sister, 41", daughter: "Daughter, 19", mother: "Mother, 63", aunt: "Aunt, 55",
+      sendBtn: "Send invitations", preview: "Message preview",
+      msgText: "Hello — a close relative's health record suggests it may help to check in on breast health earlier than usual. This is optional and private. Reply Yes to book, or No thanks.",
+      sentToast: "Invitations sent to the people you selected.", choiceNote: "Her choice. Nothing is shared without consent."
+    },
+
+    trust: {
+      title: "Built to be trusted", sub: "Safeguards behind every flag",
+      items: [
+        ["fa-user-check","Consent first","Each data type — invites, genetic result, family message — is a separate yes/no."],
+        ["fa-user-group","Small groups hidden","Counts under 10 are suppressed; thin data is greyed out."],
+        ["fa-scale-balanced","Fairness checks","Flag, uptake and miss rates are checked by nationality, sex, age, region, insurance."],
+        ["fa-chart-line","Calibration","Predicted vs. observed cancers are checked for every major group, monthly."],
+        ["fa-flag","Stays in the UAE","DoH-approved infrastructure, full audit log — never used for insurance or visas."],
+        ["fa-stethoscope","Not a diagnosis","It ranks who to invite first and why. The doctor makes every clinical decision."]
+      ],
+      sourcesTitle: "Data used in this demo"
+    }
+  },
+
+  ar: {
+    brand: "سَنَد", brandSub: "تواصل الأسرة",
+    tabs: { home: "الرئيسية", insights: "رؤى", relay: "تنبيهاتي", family: "العائلة", trust: "الثقة" },
+
+    home: {
+      title: "الفحص حسب حدث الحياة، لا تاريخ الميلاد",
+      sub: "الوقاية والفحص الدقيق في أبوظبي",
+      stat1n: "أقل من ١٠٪", stat1l: "من البالغين المؤهلين تم فحصهم لسرطان القولون",
+      stat2n: "٦٧٪", stat2l: "من حالات القولون الجديدة اكتُشفت متأخرة (٢٠٢٣)",
+      stat3n: "١ من ٣", stat3l: "حالات سرطان القولون بالإمارات تحت سن الخمسين",
+      howTitle: "كيف يعمل سَنَد", howSub: "إنذار ذكي — يرصد أحداث الحياة، بموافقة صاحبها، ويقترح الفحص المناسب في الوقت المناسب.",
+      step1: "حدث حياة", step2: "تقييم الخطر", step3: "تنبيه مُفسَّر", step4: "اللغة والخيار المناسب",
+      whyTitle: "الخطر الحقيقي يختبئ حيث لا تنظر قاعدة التقويم", whySub: "دعوة حسب العمر تُعامل الجميع بالتساوي — هذه الحالات لا تناسبها:",
+      why: [
+        ["fa-people-roof","التاريخ العائلي","تشخيص أحد الأقارب يغيّر الصورة"],
+        ["fa-dna","الجينات (BRCA / Lynch)","نتيجة لا تسألها الدعوة التقليدية"],
+        ["fa-calendar-xmark","فحص متأخر أو ناقص","فراغ في السجل، لا انخفاض في الخطر"],
+        ["fa-shield-heart","السكري، السمنة، أمراض الأمعاء","عوامل خطر معروفة لم تُفحص"],
+        ["fa-child-reaching","زيارة الطفل، لم يُسأل الوالد","زيارة واحدة، جيلان من الخطر"],
+        ["fa-language","المنطقة، نوبات العمل، اللغة","دعوة متأخرة أو غير مفهومة"]
+      ],
+      goBtn: "شاهد المثال لشخص واحد ←"
+    },
+
+    insights: {
+      title: "أبوظبي في لمحة", sub: "للمخططين — خريطة الخطر المجتمعي (بيانات مفتوحة، للتوضيح فقط)",
+      cases: "حالات السرطان الجديدة حسب الموقع", casesCap: "الثدي والغدة الدرقية والقولون في المقدمة.",
+      gender: "التوزيع حسب الجنس", genderCap: "الثدي يتصدر لدى النساء؛ القولون والدم لدى الرجال.",
+      stage: "مرحلة التشخيص (الإمارات)", stageCap: "المنتشر وغير المعروف معًا يمثلان نصف الحالات تقريبًا — فجوة التوقيت في رسم واحد.",
+      obesity: "انتشار السمنة حسب العمر، أبوظبي", obesityCap: "يرتفع الخطر بشدة بعد سن ٤٥ — إشارة مهمة لمحرك المخاطر.",
+      facilities: "المرافق الصحية، أبوظبي", facilitiesCap: "معظم الطاقة الاستيعابية في القطاع الخاص — التوعية يجب أن تصل للقطاعين.",
+      mortality: "وفيات السرطان، أبوظبي (الاتجاه)", mortalityCap: "اتجاه متصاعد يعزز أهمية الاكتشاف المبكر.",
+      men: "رجال", women: "نساء", all: "الجميع",
+      note: "المجموعات أقل من ١٠ تُخفى في خريطة التخطيط الفعلية. هذه بيانات مفتوحة للتوضيح فقط، وليست سجلات فردية."
+    },
+
+    relay: {
+      title: "المحرك الشخصي", sub: "ما يراه الشخص وطبيبه",
+      personas: { mariam: "مريم، ٣٨", rajesh: "راجيش، ٥٠", aisha: "د. عائشة" },
+      personaRoles: { mariam: "إماراتية، والدتها شُخّصت في عمر ٤٤", rajesh: "مشرف وافد، لم يُفحص من قبل", aisha: "مخططة صحة عامة" },
+      flagLabel: "خطر مرتفع (عائلي)", whyTitle: "الأسباب (الأهم)",
+      mariamWhy: [
+        ["والدتها أصيبت بسرطان الثدي في عمر ٤٤","المصدر: زيارة فحص، بإفادة ذاتية"],
+        ["لا يوجد تصوير ماموغرام في السجل","المصدر: السجل الصحي"],
+        ["درجة خطر الثدي فوق الحد","نموذج الخطر، من عمر ٣٥"]
+      ],
+      rajeshFlag: "خطر مرتفع (تشخيص جديد)",
+      rajeshWhy: [
+        ["تشخيص سكري جديد في عمر ٥٠","المصدر: نتيجة مخبرية هذا الشهر"],
+        ["لا يوجد فحص براز (FIT) في السجل","المصدر: السجل الصحي"],
+        ["فحص القولون مستحق من عمر ٤٥","إرشادات دائرة الصحة"]
+      ],
+      aishaCard: "العرض المجتمعي", aishaText: "د. عائشة لا ترى تنبيهًا واحدًا — بل الخريطة: أين الفجوات، وأي فئة يجب الوصول إليها تاليًا.",
+      confidence: "الثقة: متوسطة — التاريخ العائلي لم يُتحقق منه بعد",
+      suggested: "المقترح: فحص ثدي مبكر + استشارة وراثية، خلال ٤ أسابيع",
+      suggestedRajesh: "المقترح: فحص براز (FIT)، خلال ٤ أسابيع",
+      yes: "نعم، احجز", remind: "ذكّرني بعد ٣ أشهر", no: "لا، شكرًا",
+      stepTitle: "مراحل المسار",
+      steps: ["إدخال البيانات","محرك الخطر","التنبيه","المسار","التواصل","النتيجة"],
+      toastYes: "تم الحجز — تم ضبط تذكير للمتابعة.", toastRemind: "تم التسجيل. سنتابع بعد ٣ أشهر.", toastNo: "لا مشكلة — تم حفظ اختيارك.",
+      notDiag: "أولوية سكانية فقط. الطبيب يتخذ كل قرار سريري."
+    },
+
+    family: {
+      title: "تواصل الأسرة", sub: "بإذنها، يمكن لمريم دعوة أقاربها لنفس الفحص",
+      me: "مريم، ٣٨", meSub: "تم رصد خطر مرتفع",
+      sister: "الأخت، ٤١", daughter: "الابنة، ١٩", mother: "الأم، ٦٣", aunt: "العمة، ٥٥",
+      sendBtn: "إرسال الدعوات", preview: "معاينة الرسالة",
+      msgText: "مرحبًا — يشير سجل صحي لقريبة مقربة إلى أنه قد يكون من المفيد فحص صحة الثدي مبكرًا عن المعتاد. هذا اختياري وسرّي تمامًا. أجيبي بنعم للحجز، أو لا شكرًا.",
+      sentToast: "تم إرسال الدعوات إلى من اخترتهم.", choiceNote: "اختيارها هي. لا تتم مشاركة شيء دون موافقة."
+    },
+
+    trust: {
+      title: "مبني على الثقة", sub: "الضمانات خلف كل تنبيه",
+      items: [
+        ["fa-user-check","الموافقة أولًا","كل نوع بيانات — الدعوات، النتيجة الوراثية، رسالة العائلة — له موافقة منفصلة."],
+        ["fa-user-group","إخفاء المجموعات الصغيرة","الأعداد أقل من ١٠ تُحجب؛ البيانات الضعيفة تُعتم."],
+        ["fa-scale-balanced","فحوصات العدالة","تُراجع معدلات التنبيه والاستجابة والفوات حسب الجنسية والجنس والعمر والمنطقة والتأمين."],
+        ["fa-chart-line","المعايرة","تُقارن الحالات المتوقعة بالفعلية لكل فئة رئيسية، شهريًا."],
+        ["fa-flag","يبقى داخل الإمارات","بنية تحتية معتمدة من دائرة الصحة، وسجل تدقيق كامل — لا يُستخدم أبدًا للتأمين أو التأشيرات."],
+        ["fa-stethoscope","ليس تشخيصًا","يرتّب أولوية الدعوة وسببها فقط. الطبيب يتخذ كل قرار سريري."]
+      ],
+      sourcesTitle: "البيانات المستخدمة في هذا العرض"
+    }
+  }
+};
+
+function t() { return STR[lang]; }
+
+function fmtNum(n) {
+  return lang === "ar" ? n.toLocaleString("ar-EG") : n.toLocaleString("en-US");
+}
+
+function setLang(l) {
+  lang = l;
+  localStorage.setItem("sanad_lang", l);
+  document.documentElement.setAttribute("dir", l === "ar" ? "rtl" : "ltr");
+  document.documentElement.setAttribute("lang", l);
+  renderAll();
+}
+
+function toast(msg) {
+  const el = document.getElementById("toast");
+  el.textContent = msg;
+  el.classList.add("show");
+  clearTimeout(window.__toastTimer);
+  window.__toastTimer = setTimeout(() => el.classList.remove("show"), 2400);
+}
+
+/* ---------- RENDER: HOME ---------- */
+function renderHome() {
+  const s = t().home;
+  document.getElementById("screen-home").innerHTML = `
+    <h2 class="page-title">${s.title}</h2>
+    <p class="page-sub">${s.sub}</p>
+    <div class="stat-row">
+      <div class="stat rose"><div class="num">${s.stat1n}</div><div class="lbl">${s.stat1l}</div></div>
+      <div class="stat amber"><div class="num">${s.stat2n}</div><div class="lbl">${s.stat2l}</div></div>
+      <div class="stat teal"><div class="num">${s.stat3n}</div><div class="lbl">${s.stat3l}</div></div>
+    </div>
+    <div class="card">
+      <h3><span class="emo">🔔</span> ${s.howTitle}</h3>
+      <p class="caption" style="margin-top:0">${s.howSub}</p>
+      <div class="steps">
+        <div class="step active"><div class="circ"><span class="emo">🏠</span></div>${s.step1}</div>
+        <div class="step active"><div class="circ"><span class="emo">🔎</span></div>${s.step2}</div>
+        <div class="step active"><div class="circ"><span class="emo">💬</span></div>${s.step3}</div>
+        <div class="step active"><div class="circ"><span class="emo">🗣️</span></div>${s.step4}</div>
+      </div>
+    </div>
+    <div class="card">
+      <h3><span class="emo">🔍</span> ${s.whyTitle}</h3>
+      <p class="caption" style="margin-top:0">${s.whySub}</p>
+      ${s.why.map((w,i) => `
+        <div class="why-item">
+          <div class="why-num" style="background:var(--navy)"><span class="emo" style="font-size:11px">${ic(w[0])}</span></div>
+          <div class="why-text"><b>${w[1]}</b><small>${w[2]}</small></div>
+        </div>`).join("")}
+    </div>
+    <button class="btn primary" style="width:100%; padding:13px;" onclick="goTab('relay')">${s.goBtn}</button>
+  `;
+}
+
+/* ---------- RENDER: INSIGHTS ---------- */
+function renderInsights() {
+  const s = t().insights;
+  document.getElementById("screen-insights").innerHTML = `
+    <h2 class="page-title">${s.title}</h2>
+    <p class="page-sub">${s.sub}</p>
+
+    <div class="card">
+      <h3><span class="emo">📊</span> ${s.cases}</h3>
+      <div class="chart-wrap"><canvas id="chartCases"></canvas></div>
+      <p class="caption">${s.casesCap}</p>
+    </div>
+
+    <div class="card">
+      <h3><span class="emo">⚥</span> ${s.gender}</h3>
+      <div class="chart-wrap"><canvas id="chartGender"></canvas></div>
+      <p class="caption">${s.genderCap}</p>
+    </div>
+
+    <div class="card">
+      <h3><span class="emo">⏳</span> ${s.stage}</h3>
+      <div class="chart-wrap"><canvas id="chartStage"></canvas></div>
+      <p class="caption">${s.stageCap}</p>
+    </div>
+
+    <div class="card">
+      <h3><span class="emo">⚖️</span> ${s.obesity}</h3>
+      <div class="chart-wrap"><canvas id="chartObesity"></canvas></div>
+      <p class="caption">${s.obesityCap}</p>
+    </div>
+
+    <div class="card">
+      <h3><span class="emo">🏥</span> ${s.facilities}</h3>
+      <div class="chart-wrap"><canvas id="chartFacilities"></canvas></div>
+      <p class="caption">${s.facilitiesCap}</p>
+    </div>
+
+    <div class="card">
+      <h3><span class="emo">📈</span> ${s.mortality}</h3>
+      <div class="chart-wrap"><canvas id="chartMortality"></canvas></div>
+      <p class="caption">${s.mortalityCap}</p>
+    </div>
+
+    <div class="source-box"><span class="emo">ℹ️</span> ${s.note}</div>
+  `;
+  buildCharts();
+}
+
+const COLORS = ["#c63a56","#d98a2b","#0f9488","#17305c","#7c93c9","#b9c6e0"];
+
+function destroyCharts() { Object.values(charts).forEach(c => c && c.destroy()); charts = {}; }
+
+function buildCharts() {
+  destroyCharts();
+  const s = t().insights;
+  const fontColor = "#1c2430";
+  Chart.defaults.font.family = "Segoe UI, Tahoma, sans-serif";
+  Chart.defaults.color = fontColor;
+
+  charts.cases = new Chart(document.getElementById("chartCases"), {
+    type: "bar",
+    data: {
+      labels: DATA.siteAll.map(x => L(x[0], lang)),
+      datasets: [{ data: DATA.siteAll.map(x => x[1]), backgroundColor: COLORS[0], borderRadius: 6, maxBarThickness: 18 }]
+    },
+    options: { indexAxis: "y", plugins: { legend: { display: false } }, scales: { x: { grid: { display: false } }, y: { grid: { display: false } } } }
+  });
+
+  const menMap = Object.fromEntries(DATA.siteMen);
+  const womenMap = Object.fromEntries(DATA.siteWomen);
+  const genderCats = [...new Set([...DATA.siteMen.map(x => x[0]), ...DATA.siteWomen.map(x => x[0])])]
+    .sort((a, b) => ((womenMap[b]||0)+(menMap[b]||0)) - ((womenMap[a]||0)+(menMap[a]||0)))
+    .slice(0, 7);
+  charts.gender = new Chart(document.getElementById("chartGender"), {
+    type: "bar",
+    data: {
+      labels: genderCats.map(c => L(c, lang)),
+      datasets: [
+        { label: s.men, data: genderCats.map(c => menMap[c] || 0), backgroundColor: "#17305c", borderRadius: 5, maxBarThickness: 12 },
+        { label: s.women, data: genderCats.map(c => womenMap[c] || 0), backgroundColor: "#c63a56", borderRadius: 5, maxBarThickness: 12 }
+      ]
+    },
+    options: { plugins: { legend: { position: "bottom", labels: { boxWidth: 9, font: { size: 10.5 } } } }, scales: { x: { grid: { display: false }, ticks: { font: { size: 9.5 } } }, y: { grid: { color: "#eef1f6" } } } }
+  });
+
+  charts.stage = new Chart(document.getElementById("chartStage"), {
+    type: "doughnut",
+    data: { labels: DATA.seerStage.map(x => L(x[0], lang)), datasets: [{ data: DATA.seerStage.map(x => x[1]), backgroundColor: COLORS, borderWidth: 2, borderColor: "#fff" }] },
+    options: { plugins: { legend: { position: "bottom", labels: { boxWidth: 9, font: { size: 10 } } } }, cutout: "60%" }
+  });
+
+  charts.obesity = new Chart(document.getElementById("chartObesity"), {
+    type: "bar",
+    data: { labels: DATA.obesityByAge.map(x => x[0]), datasets: [{ data: DATA.obesityByAge.map(x => x[1]), backgroundColor: "#d98a2b", borderRadius: 6, maxBarThickness: 36 }] },
+    options: { plugins: { legend: { display: false }, tooltip: { callbacks: { label: c => c.parsed.y + "%" } } }, scales: { y: { ticks: { callback: v => v + "%" }, grid: { color: "#eef1f6" } }, x: { grid: { display: false } } } }
+  });
+
+  charts.facilities = new Chart(document.getElementById("chartFacilities"), {
+    type: "doughnut",
+    data: { labels: DATA.facilitiesSector.map(x => L(x[0], lang)), datasets: [{ data: DATA.facilitiesSector.map(x => x[1]), backgroundColor: ["#17305c", "#0f9488"], borderWidth: 2, borderColor: "#fff" }] },
+    options: { plugins: { legend: { position: "bottom", labels: { boxWidth: 9, font: { size: 10.5 } } } }, cutout: "60%" }
+  });
+
+  charts.mortality = new Chart(document.getElementById("chartMortality"), {
+    type: "line",
+    data: { labels: DATA.mortalityTrend.map(x => x[0]), datasets: [{ data: DATA.mortalityTrend.map(x => x[1]), borderColor: "#c63a56", backgroundColor: "rgba(198,58,86,.12)", fill: true, tension: .35, pointRadius: 4, pointBackgroundColor: "#c63a56" }] },
+    options: { plugins: { legend: { display: false } }, scales: { y: { grid: { color: "#eef1f6" } }, x: { grid: { display: false } } } }
+  });
+}
+
+/* ---------- RENDER: RELAY ---------- */
+function renderRelay() {
+  const s = t().relay;
+  const names = { mariam: "M", rajesh: "R", aisha: "A" };
+  let body = "";
+
+  if (persona === "aisha") {
+    body = `
+      <div class="card">
+        <h3><span class="emo">🗺️</span> ${s.aishaCard}</h3>
+        <p style="font-size:13px; line-height:1.6; margin:0;">${s.aishaText}</p>
+      </div>`;
+  } else {
+    const isM = persona === "mariam";
+    const flagLabel = isM ? s.flagLabel : s.rajeshFlag;
+    const why = isM ? s.mariamWhy : s.rajeshWhy;
+    const suggested = isM ? s.suggested : s.suggestedRajesh;
+    body = `
+      <div class="card">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+          <div class="persona-card"><div class="av">${names[persona]}</div><div><div class="nm">${s.personas[persona]}</div><div class="rl">${s.personaRoles[persona]}</div></div></div>
+          <span class="badge elevated">${flagLabel}</span>
+        </div>
+        <h3 style="margin-top:14px;"><span class="emo">📋</span> ${s.whyTitle}</h3>
+        ${why.map((w,i) => `
+          <div class="why-item">
+            <div class="why-num">${i+1}</div>
+            <div class="why-text"><b>${w[0]}</b><small>${w[1]}</small></div>
+          </div>`).join("")}
+        <span class="badge confidence"><span class="emo">◐</span> ${s.confidence}</span>
+        <p style="font-size:12.5px; font-weight:700; color:var(--teal); margin:12px 0 0;"><span class="emo">✅</span> ${suggested}</p>
+        <div class="actions">
+          <button class="btn primary" onclick="relayAction('yes')">${s.yes}</button>
+          <button class="btn secondary" onclick="relayAction('remind')">${s.remind}</button>
+          <button class="btn ghost" onclick="relayAction('no')">${s.no}</button>
+        </div>
+        <p class="caption" style="text-align:center;">${s.notDiag}</p>
+      </div>`;
+  }
+
+  document.getElementById("screen-relay").innerHTML = `
+    <h2 class="page-title">${s.title}</h2>
+    <p class="page-sub">${s.sub}</p>
+    <div class="chip-row">
+      ${["mariam","rajesh","aisha"].map(p => `<div class="chip ${p===persona?'active':''}" onclick="selectPersona('${p}')"><span class="emo">👤</span>${s.personas[p]}</div>`).join("")}
+    </div>
+    ${body}
+    <div class="card">
+      <h3><span class="emo">🧭</span> ${s.stepTitle}</h3>
+      <div class="steps">
+        ${s.steps.map((st,i) => `<div class="step ${i<=pathwayStep?'done':''} ${i===pathwayStep?'active':''}"><div class="circ">${i+1}</div>${st}</div>`).join("")}
+      </div>
+    </div>
+  `;
+}
+
+function selectPersona(p) { persona = p; renderRelay(); }
+
+function relayAction(kind) {
+  const s = t().relay;
+  if (kind === "yes") { pathwayStep = Math.min(pathwayStep + 1, 5); toast(s.toastYes); }
+  else if (kind === "remind") toast(s.toastRemind);
+  else toast(s.toastNo);
+  renderRelay();
+}
+
+/* ---------- RENDER: FAMILY ---------- */
+let relatives = [
+  { key: "sister", on: true },
+  { key: "daughter", on: true },
+  { key: "mother", on: false },
+  { key: "aunt", on: false }
+];
+
+function renderFamily() {
+  const s = t().family;
+  document.getElementById("screen-family").innerHTML = `
+    <h2 class="page-title">${s.title}</h2>
+    <p class="page-sub">${s.sub}</p>
+    <div class="card">
+      <div class="tree">
+        <div class="me">${s.me}<small>${s.meSub}</small></div>
+        <div class="branch-line"></div>
+        <div class="relatives">
+          ${relatives.map(r => `
+            <div class="relative">
+              <div class="who">${s[r.key]}</div>
+              <div class="switch ${r.on?'on':''}" onclick="toggleRelative('${r.key}')"><i></i></div>
+            </div>`).join("")}
+        </div>
+      </div>
+      <button class="btn primary" style="width:100%; margin-top:14px;" onclick="sendInvites()">${s.sendBtn}</button>
+    </div>
+    <div class="card">
+      <h3><span class="emo">💬</span> ${s.preview}</h3>
+      <div class="msg-preview">${s.msgText}</div>
+    </div>
+    <div class="source-box"><span class="emo">🔒</span> ${s.choiceNote}</div>
+  `;
+}
+
+function toggleRelative(key) {
+  const r = relatives.find(x => x.key === key);
+  r.on = !r.on;
+  renderFamily();
+}
+
+function sendInvites() { toast(t().family.sentToast); }
+
+/* ---------- RENDER: TRUST ---------- */
+function renderTrust() {
+  const s = t().trust;
+  document.getElementById("screen-trust").innerHTML = `
+    <h2 class="page-title">${s.title}</h2>
+    <p class="page-sub">${s.sub}</p>
+    <div class="card">
+      ${s.items.map(it => `
+        <div class="trust-item">
+          <div class="ic"><span class="emo">${ic(it[0])}</span></div>
+          <div><b>${it[1]}</b><small>${it[2]}</small></div>
+        </div>`).join("")}
+    </div>
+    <div class="card">
+      <h3><span class="emo">🗄️</span> ${s.sourcesTitle}</h3>
+      <div class="source-box">${DATA.sources.map(x => "• " + x).join("<br>")}</div>
+    </div>
+  `;
+}
+
+/* ---------- NAV / BOOTSTRAP ---------- */
+function goTab(name) {
+  document.querySelectorAll(".screen").forEach(el => el.classList.remove("active"));
+  document.querySelectorAll(".tab").forEach(el => el.classList.remove("active"));
+  document.getElementById("screen-" + name).classList.add("active");
+  document.getElementById("tab-" + name).classList.add("active");
+  if (name === "insights") buildCharts();
+}
+
+function renderTabbar() {
+  const s = t().tabs;
+  const icons = { home: "fa-house", insights: "fa-chart-pie", relay: "fa-bell", family: "fa-people-roof", trust: "fa-shield-heart" };
+  document.getElementById("tabbar").innerHTML = Object.keys(s).map(k =>
+    `<div class="tab" id="tab-${k}" onclick="goTab('${k}')"><span class="emo">${ic(icons[k])}</span>${s[k]}</div>`
+  ).join("");
+}
+
+function renderTopbar() {
+  const T = t();
+  document.getElementById("brandName").textContent = T.brand;
+  document.getElementById("brandSub").textContent = T.brandSub;
+  document.getElementById("langLabel").textContent = lang === "en" ? "عربي" : "EN";
+}
+
+function renderAll() {
+  renderTopbar();
+  renderTabbar();
+  renderHome();
+  renderInsights();
+  renderRelay();
+  renderFamily();
+  renderTrust();
+  const active = document.querySelector(".screen.active");
+  const activeName = active ? active.id.replace("screen-", "") : "home";
+  goTab(activeName);
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  document.documentElement.setAttribute("dir", lang === "ar" ? "rtl" : "ltr");
+  document.documentElement.setAttribute("lang", lang);
+  document.getElementById("langBtn").addEventListener("click", () => setLang(lang === "en" ? "ar" : "en"));
+  renderAll();
+  goTab("home");
+});
+
+</script>
